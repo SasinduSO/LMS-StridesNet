@@ -1,7 +1,12 @@
 const courseModel = require("../models/courseModel");
 const studentModel = require("../models/studentModel");
 
-const studentController = {
+const jwt = require('jsonwebtoken');
+const { validationResult } = require('express-validator');
+
+const SECRET_KEY = process.env.JWT_SECRET_KEY || "your_default_secret_key"; // Use environment variable or a default secret key
+
+const StudentController = {
   enrollCourse: async (req, res) => {
     try {
       const data = req.body;
@@ -63,5 +68,28 @@ const studentController = {
       res.status(404).json(err);
     }
   },
+  // New function to generate and send token
+  generateToken: async (req, res) => {
+    try {
+      const { email } = req.body;
+      const student = await studentModel.getStudentByEmail(email);
+
+      if (student.length === 0) {
+        return res.status(404).json('Student not found');
+      }
+
+      // Generate JWT token
+      const token = jwt.sign(
+        { id: student[0].id, email: student[0].email, type: 'student' },
+        SECRET_KEY,
+        { expiresIn: '1h' }
+      );
+
+      res.status(200).json({ token });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
 };
-module.exports = studentController;
+
+module.exports = StudentController;

@@ -17,6 +17,9 @@ import Guest from "./middleware/Guest";
 import Admin from "./middleware/Admin";
 import Student from "./middleware/Student";
 import Instructor from "./middleware/Instructor";
+import AddUser from "./Admin/components/AddUser";
+
+
 export const router = createBrowserRouter([
   {
     element: <Guest />,
@@ -43,6 +46,10 @@ export const router = createBrowserRouter([
             element: <div>Notfound</div>,
           },
         ],
+      },
+      {
+        path: "/SignUp",
+        element: <AddUser />, // Adding the sign-up route
       },
     ],
   },
@@ -99,7 +106,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "/Admin/assign",
+        path: "/Admin/Assign",
         element: (
           <>
             <Header />
@@ -108,6 +115,8 @@ export const router = createBrowserRouter([
           </>
         ),
       },
+
+      
     ],
   },
 

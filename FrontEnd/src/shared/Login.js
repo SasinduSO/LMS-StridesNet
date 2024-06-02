@@ -4,6 +4,7 @@ import Alert from "react-bootstrap/Alert";
 import "../styleShared/login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { setAuthUser } from "../helper/Storage";
+
 function Login() {
   const navigate = useNavigate();
   const [login, setLogin] = useState({
@@ -12,21 +13,35 @@ function Login() {
     loading: false,
     err: null,
   });
+
   const LoginFun = (e) => {
     e.preventDefault();
-    setLogin({ ...login, loading: true, err: [] });
+    setLogin({ ...login, loading: true, err: null });
+
     axios
       .post("http://localhost:4000/login", {
         email: login.email,
         password: login.password,
       })
       .then((resp) => {
-        setLogin({ ...login, loading: false, err: [] });
-        setAuthUser(resp.data);
-        navigate("/" + resp.data.type);
+        setLogin({ ...login, loading: false, err: null });
+
+        // Debug log to check the response
+        console.log("Login response:", resp.data);
+
+        // Save the token and user information
+        setAuthUser(resp.data.token, resp.data.user);
+
+        // Ensure user type is present
+        if (resp.data.user.type) {
+          // Redirect to the user-specific page
+          navigate(`/${resp.data.user.type}`);
+        } else {
+          console.error("User type is undefined!");
+        }
       })
       .catch((err) => {
-        if (err.response.status === 400 || err.response.status === 422) {
+        if (err.response && (err.response.status === 400 || err.response.status === 422)) {
           setLogin({
             ...login,
             loading: false,
@@ -41,6 +56,7 @@ function Login() {
         }
       });
   };
+
   return (
     <>
       <div className="st-login-page">
@@ -87,11 +103,11 @@ function Login() {
                 className="st-login-btn"
                 disabled={login.loading === true}
               >
-                Login
+                {login.loading ? 'Logging in...' : 'Login'}
               </button>
             </form>
             <button className="st-login-btn">
-              <Link to="/">Home Page</Link>
+              <Link to="/SignUp">Sign Up</Link>
             </button>
           </div>
         </div>

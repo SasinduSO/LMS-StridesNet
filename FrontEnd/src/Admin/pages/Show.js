@@ -8,6 +8,7 @@ import { getAuthUser } from "../../helper/Storage";
 
 const Show = () => {
   const auth = getAuthUser();
+  console.log(auth)
   let { type } = useParams();
   if (type === undefined) {
     type = "instructor";
@@ -25,6 +26,11 @@ const Show = () => {
   useEffect(() => {
     setData({ ...data, loading: true });
     const link = `http://localhost:4000/view-${type}s`;
+
+    console.log('Auth Token:', auth.token);
+    console.log('Request URL:', link);
+    
+
     axios
       .get(link, {
         headers: {
@@ -41,9 +47,9 @@ const Show = () => {
       })
       .catch((error) => {
         console.log(error);
-        setData({ ...data, loading: false, err: "Something went wrong" });
+        setData({ ...data, loading: false, err: "Somethinggg went wrong" });
       });
-  }, [type, data.reload]);
+  }, [type,auth.token, data.reload]);
 
   const deleteData = (item) => {
     const link = `http://localhost:4000/delete-${type}`;
@@ -63,7 +69,7 @@ const Show = () => {
         .catch((error) => {
           console.log(error);
           if (error.response.status === 404) {
-            setData({ ...data, loading: false, err: "Something Went Wrong" });
+            setData({ ...data, loading: false, err: "Something Wentt Wrong" });
           } else {
             setData({ ...data, loading: false, err: error.response.data });
           }

@@ -204,7 +204,7 @@ function Home() {
         </div>
       </section>
       <div className="st-about" id="About">
-        <h1>About</h1>
+        <h1>Notices</h1>
         <div className="st-about_main">
           <div className="st-about_image">
             <div className="st-about_small_image">

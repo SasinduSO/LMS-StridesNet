@@ -4,7 +4,10 @@ const studentModel = require("../models/studentModel");
 const instructorModel = require("../models/instructorModel");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
+
+const SECRET_KEY = process.env.JWT_SECRET_KEY || "your_default_secret_key"; // Use environment variable or a default secret key
 
 const AdminController = {
   viewInstructors: async (req, res) => {
@@ -59,12 +62,9 @@ const AdminController = {
       res.status(404).json(err);
     }
   },
-
   getInstructor: async (req, res) => {
     try {
-      const instructor = await instructorModel.getInstructorByEmail(
-        req.params.email
-      );
+      const instructor = await instructorModel.getInstructorByEmail(req.params.email);
 
       if (instructor.length == 0) {
         return res.status(400).json("Instructor Not Found");
@@ -96,9 +96,7 @@ const AdminController = {
         return res.status(404).json("Instructor Email Is Not Exists");
       }
 
-      const instructorCourses = await courseModel.getInstructorCourses(
-        instructor[0].id
-      );
+      const instructorCourses = await courseModel.getInstructorCourses(instructor[0].id);
 
       if (instructorCourses.length === 0) {
         await adminModel.deleteInstructorByEmail(instructor[0].email);

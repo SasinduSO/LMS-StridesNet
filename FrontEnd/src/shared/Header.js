@@ -21,7 +21,7 @@ const Header =()=>{
 
               {auth&&(
                 <>
-                <Link to={`/${auth.type}`} className="admin-navbar-brand" id="admin-logo"><span>i</span>learn</Link>
+                <Link to={`/${auth.type}`} className="admin-navbar-brand" id="admin-logo"><span>Strides</span>NET</Link>
                 <div className="admin-logout">
                 <Link to="/"className="admin-log-link" onClick={Logout}>logout</Link>
                 </div>
@@ -29,7 +29,7 @@ const Header =()=>{
               )}
               {!auth&&(
                 <>
-                <Link to={`/`} className="admin-navbar-brand" id="admin-logo"><span>i</span>learn</Link>
+                <Link to={`/`} className="admin-navbar-brand" id="admin-logo"><span>Strides</span>NET</Link>
                 <div className="admin-logout">
                 <Link to="/login"className="admin-log-link">login</Link>
                 </div>
@@ -44,7 +44,7 @@ const Header =()=>{
                   <div className="admin-navbar-collapse" id="adminMyTopNav">  
                   <a href={"#courses"}className="admin-nav-link">Courses</a>
                   <a href={"#Instructors"}className="admin-nav-link">Instructors</a>
-                  <a href={"#About"}className="admin-nav-link">About</a>
+                  <a href={"#About"}className="admin-nav-link">Notices</a>
                   </div>
                 )}
                 {/*AdminHeader*/}

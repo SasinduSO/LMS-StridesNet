@@ -1,4 +1,4 @@
-# ILEARN
+# Strides-Net
 "LMS" (Learning Management System), which help students register their courses.
 
 • At first admin, instructors and students should login to the “LMS” dashboard.
@@ -9,3 +9,6 @@
 • Instructors can set grades to the students.
 • Students can register available courses.
 • Students can show the registered courses with grades
+
+To Do:
+• Admin needs to get stat report eg: 

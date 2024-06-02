@@ -19,6 +19,7 @@ const Assign = () => {
     e.preventDefault();
     setData({ ...data, loading: true, error: "", success: "" });
     const link = "http://localhost:4000/assign-instructors-to-courses";
+    console.log('Request URL:', link);
     axios
       .put(
         link,
