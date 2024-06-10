@@ -38,7 +38,7 @@ const Main = () => {
         <div className="text">
           <i>
             {" "}
-            in iLEARN you can manage<br></br> your courses eaily
+            in Strides-Net you can manage<br></br> your courses eaily
           </i>
         </div>
         <Link to="/Instructor/Courses" className="Ins-Link">

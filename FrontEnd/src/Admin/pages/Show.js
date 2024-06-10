@@ -8,7 +8,7 @@ import { getAuthUser } from "../../helper/Storage";
 
 const Show = () => {
   const auth = getAuthUser();
-  console.log(auth)
+  console.log(auth);
   let { type } = useParams();
   if (type === undefined) {
     type = "instructor";

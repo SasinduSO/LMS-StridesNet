@@ -1,3 +1,4 @@
+import React from "react";
 import AddCourse from "../components/AddCourse";
 import AddUser from "../components/AddUser";
 
@@ -7,10 +8,11 @@ const AdminAdd = () => {
   let { type } = useParams();
   type = type.toLowerCase();
   if (type === "course") {
-    return AddCourse();
+    return <AddCourse />;
   } else {
-    return AddUser(type);
+    return <AddUser type={type} />;
   }
 };
 
 export default AdminAdd;
+

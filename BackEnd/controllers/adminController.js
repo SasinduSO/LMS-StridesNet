@@ -2,6 +2,7 @@ const adminModel = require("../models/adminModel");
 const courseModel = require("../models/courseModel");
 const studentModel = require("../models/studentModel");
 const instructorModel = require("../models/instructorModel");
+const employeeModel = require("../models/employeeModel");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
@@ -23,6 +24,21 @@ const AdminController = {
       res.status(404).json(err);
     }
   },
+  
+    viewEmployees: async (req, res) => {
+    try {
+      const employees = await adminModel.getEmployees();
+
+      if (employees.length == 0) {
+        return res.status(200).json("No Assistants Found");
+      }
+
+      res.status(200).json(employees);
+    } catch (err) {
+      res.status(404).json(err);
+    }
+  },
+  
   viewStudents: async (req, res) => {
     try {
       const students = await adminModel.getStudents();
@@ -75,6 +91,24 @@ const AdminController = {
       res.status(404).json(err);
     }
   },
+
+  
+  getEmployee: async (req, res) => {
+    try {
+      const employee = await employeeModel.getEmployeeByEmail(req.params.email);
+
+      if (employee.length == 0) {
+        return res.status(400).json("Employee Not Found");
+      }
+
+      res.status(200).json(employee);
+    } catch (err) {
+      res.status(404).json(err);
+    }
+  },
+
+  
+
   getStudent: async (req, res) => {
     try {
       const student = await studentModel.getStudentByEmail(req.params.email);
@@ -112,6 +146,25 @@ const AdminController = {
       res.status(404).json(err);
     }
   },
+
+
+  deleteEmployee: async (req, res) => {
+    try {
+      const employee = await adminModel.getUser(req.body.email);
+
+      if (employee.length == 0) {
+        return res.status(404).json("Employee Email Is Not Exists");
+      }
+
+      await adminModel.deleteEmployeeByEmail(employee[0].email);
+      res.status(200).json("Employee Deleted Successfully");
+    } catch (err) {
+      res.status(404).json(err);
+    }
+  },
+
+
+
   deleteStudent: async (req, res) => {
     try {
       const student = await adminModel.getUser(req.body.email);
@@ -145,7 +198,7 @@ const AdminController = {
       const errors = validationResult(req);
 
       if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() });
+       // return res.status(422).json({ errors: errors.array() });
       }
 
       const instructor = {
@@ -154,7 +207,6 @@ const AdminController = {
         email: req.body.email,
         phone: req.body.phone,
         status: req.body.status,
-        token: crypto.randomBytes(16).toString("hex"),
         type: "instructor",
       };
 
@@ -176,6 +228,46 @@ const AdminController = {
       res.status(404).json(err);
     }
   },
+
+ addEmployee: async (req, res) => {
+    try {
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+       // return res.status(422).json({ errors: errors.array() });
+      }
+
+      const employee = {
+        name: req.body.name,
+        password: await bcrypt.hash(req.body.password, 10),
+        email: req.body.email,
+        phone: req.body.phone,
+        status: req.body.status,
+        type: "employee",
+      };
+
+      const existingEmail = await adminModel.getUser(employee.email);
+
+      if (existingEmail.length > 0) {
+        return res.status(409).json("Employee Email Is Already Existing");
+      }
+
+      const existingPhone = await adminModel.getUserByPhone(employee.phone);
+
+      if (existingPhone.length > 0) {
+        return res.status(409).json("Employee Phone Is Already Existing");
+      }
+
+      await adminModel.insertEmployee(employee);
+      res.status(200).json("Employee Added Successfully");
+    } catch (err) {
+      res.status(404).json(err);
+    }
+  },
+
+
+
+
   addStudent: async (req, res) => {
     try {
       const errors = validationResult(req);
@@ -247,7 +339,6 @@ const AdminController = {
         email: req.body.email,
         phone: req.body.phone,
         status: req.body.status,
-        token: crypto.randomBytes(16).toString("hex"),
         type: "instructor",
       };
 
@@ -267,7 +358,7 @@ const AdminController = {
         existingEmail.length > 0 &&
         instructor.email != instructorOldData[0].email
       ) {
-        return res.status(409).json("Instructor Email Is Already Exists");
+        return res.status(409).json("Email Already Exists");
       }
 
       const existingPhone = await adminModel.getUserByPhone(instructor.phone);
@@ -276,7 +367,7 @@ const AdminController = {
         existingPhone.length > 0 &&
         instructor.phone != instructorOldData[0].phone
       ) {
-        return res.status(409).json("Instructor Phone Is Already Exists");
+        return res.status(409).json("Instructor Phone Already Exists");
       }
 
       if (instructor.status == "1") {
@@ -308,6 +399,69 @@ const AdminController = {
       res.status(404).json(err);
     }
   },
+
+
+  updateEmployee: async (req, res) => {
+    try {
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+      }
+
+      let employee = {
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        status: req.body.status,
+        type: "employee",
+      };
+
+      const employeePassword = req.body.password;
+
+      if (employeePassword.length >= 8 && employeePassword.length <= 50) {
+        employee = Object.assign(employee, {
+          password: await bcrypt.hash(employeePassword, 10),
+        });
+      }
+
+      const existingEmail = await adminModel.getUser(employee.email);
+
+      const employeeOldData = await adminModel.getUser(req.body.oldEmail);
+
+      if (
+        existingEmail.length > 0 &&
+        employee.email != employeeOldData[0].email
+      ) {
+        return res.status(409).json("Email Already Exists");
+      }
+
+      const existingPhone = await adminModel.getUserByPhone(employee.phone);
+
+      if (
+        existingPhone.length > 0 &&
+        employee.phone != employeeOldData[0].phone
+      ) {
+        return res.status(409).json("Phone Already Exists");
+      }
+
+      if (employee.status == "1") {
+        await adminModel.updateEmployeeData(
+          employee,
+          employeeOldData[0].email
+        );
+        return res.status(200).json("Employee Updated Successfully");
+      }
+
+
+    } catch (err) {
+      res.status(404).json(err);
+    }
+  },
+  
+
+
+
   updateStudent: async (req, res) => {
     try {
       const errors = validationResult(req);
@@ -341,7 +495,7 @@ const AdminController = {
         existingEmail.length > 0 &&
         student.email != studentOldData[0].email
       ) {
-        return res.status(409).json("Student Email Is Already Exists");
+        return res.status(409).json("Email Already Exists");
       }
 
       const existingPhone = await adminModel.getUserByPhone(student.phone);
@@ -350,7 +504,7 @@ const AdminController = {
         existingPhone.length > 0 &&
         student.phone != studentOldData[0].phone
       ) {
-        return res.status(409).json("Student Phone Is Already Exists");
+        return res.status(409).json("Student Phone Already Exists");
       }
 
       await adminModel.updateStudentData(student, studentOldData[0].email);

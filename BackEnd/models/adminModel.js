@@ -10,6 +10,16 @@ class AdminModel {
     const result = query(queryString);
     return result;
   }
+
+  
+    getEmployees() {
+    const queryString =
+      "SELECT name AS Name,email AS Email,phone As Phone,status AS Status  FROM user WHERE type = 'employee'";
+
+    const result = query(queryString);
+    return result;
+  }
+  
   getStudents() {
     const queryString =
       "SELECT name AS Name,email AS Email,phone As Phone,status AS Status FROM user WHERE type = 'student'";
@@ -32,6 +42,16 @@ class AdminModel {
     const result = query(queryString, instructorEmail);
     return result;
   }
+  
+
+  deleteEmployeeByEmail(employeeEmail) {
+    const queryString =
+      "DELETE FROM user WHERE email = ? && type = 'employee'";
+    const result = query(queryString, employeeEmail);
+    return result;
+  }
+
+
   deleteStudentByEmail(studentEmail) {
     const queryString = "DELETE FROM user WHERE email = ? && type = 'student'";
     const result = query(queryString, studentEmail);
@@ -42,6 +62,13 @@ class AdminModel {
     const result = query(queryString, instructorData);
     return result;
   }
+
+  insertEmployee(employeeData) {
+    const queryString = "INSERT INTO user SET ?";
+    const result = query(queryString, employeeData);
+    return result;
+  }
+
   insertStudent(studentData) {
     const queryString = "INSERT INTO user SET ?";
     const result = query(queryString, studentData);
@@ -52,6 +79,15 @@ class AdminModel {
     const result = query(queryString, [instructorData, { email: oldEmail }]);
     return result;
   }
+
+
+  updateEmployeeData(employeeData, oldEmail) {
+    const queryString = "UPDATE user SET ? WHERE ?";
+    const result = query(queryString, [employeeData, { email: oldEmail }]);
+    return result;
+  }
+
+
   updateStudentData(studentData, oldEmail) {
     const queryString = "UPDATE user SET ? WHERE ?";
     const result = query(queryString, [studentData, { email: oldEmail }]);

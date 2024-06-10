@@ -52,7 +52,8 @@ const Header =()=>{
                   <div className="admin-navbar-collapse" id="adminMyTopNav">    
                   <Link to="/Admin/Student"className="admin-nav-link" >Students</Link>
                   <Link to="/Admin/Course"className="admin-nav-link" >Courses</Link>
-                  <Link to="/Admin/Instructor"className="admin-nav-link" >Instructors</Link>
+                  <Link to="/Admin/Instructor"className="admin-nav-link" >Instructor</Link>
+                  <Link to="/Admin/Employee"className="admin-nav-link" >Employee</Link>
                   <Link to="/Admin/Assign"className="admin-nav-link" >Assign Courses</Link>
                   </div>
                 )}

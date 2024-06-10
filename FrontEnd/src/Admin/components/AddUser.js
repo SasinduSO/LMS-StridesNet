@@ -4,9 +4,9 @@ import axios from "axios";
 import Alert from "react-bootstrap/Alert";
 import { getAuthUser } from "../../helper/Storage";
 
-const AddUser = (type) => {
+const AddUser = ({ type }) => {
   const auth = getAuthUser();
-
+  console.log(auth);
   const [user, setUser] = useState({
     name: "",
     password: "",
@@ -17,11 +17,13 @@ const AddUser = (type) => {
     error: "",
     status: "1",
   });
+  type = type.toLowerCase();
 
   const Add = (e) => {
     e.preventDefault();
     setUser({ ...user, loading: true, error: "", success: "" });
-    const link = `http://localhost:4000/add-${type}`;
+    const link = `http://localhost:4000/add-${type}`; //${type}
+    console.log(`Sending request to: ${link}`); // Debugging log
     axios
       .post(
         link,
@@ -39,6 +41,7 @@ const AddUser = (type) => {
         }
       )
       .then((res) => {
+        console.log("Response:", res.data); // Debugging log
         setUser({
           ...user,
           name: "",
@@ -47,21 +50,20 @@ const AddUser = (type) => {
           phone: "",
           loading: false,
           error: "",
-          success: res.data,
+          success: res.data.message || "User added successfully", // Ensure the success message is handled correctly
         });
       })
       .catch((err) => {
-        console.log(err);
-        if (err.response.status === 409) {
+        console.log("Error:", err.response); // Debugging log
+        if (err.response && err.response.status === 409) {
           setUser({
             ...user,
             loading: false,
-            error: err.response.data,
+            error: err.response.data.message || "Conflict error",
             success: "",
           });
-        } else if (err.response.status === 422) {
+        } else if (err.response && err.response.status === 422) {
           const errorMsg = err.response.data.errors[0].msg;
-
           setUser({
             ...user,
             loading: false,
@@ -82,7 +84,9 @@ const AddUser = (type) => {
         }
       });
   };
+
   type = type.charAt(0).toUpperCase() + type.slice(1);
+
   return (
     <>
       <div className="admin-container">
@@ -99,7 +103,6 @@ const AddUser = (type) => {
         )}
         <form
           name="myForm"
-          action="/action_page.php"
           className="admin-form"
           onSubmit={Add}
         >
@@ -139,7 +142,6 @@ const AddUser = (type) => {
               />
             </div>
           </div>
-
           <div className="admin-row">
             <div className="admin-col-25">
               <label key="password" className="admin-label">
@@ -158,7 +160,6 @@ const AddUser = (type) => {
               />
             </div>
           </div>
-
           <div className="admin-row">
             <div className="admin-col-25">
               <label key="phone" className="admin-label">
@@ -177,7 +178,6 @@ const AddUser = (type) => {
               />
             </div>
           </div>
-
           <div className="admin-row">
             <div className="admin-col-25">
               <label htmlFor="status" className="admin-label">
@@ -185,46 +185,21 @@ const AddUser = (type) => {
               </label>
             </div>
             <div className="admin-col-75">
-              {user.status == "1" && (
-                <>
-                  <select
-                    id="status"
-                    name="status"
-                    className="admin-input-select"
-                    defaultValue="1"
-                    onClick={(e) =>
-                      setUser({
-                        ...user,
-                        status: e.target.value,
-                      })
-                    }
-                  >
-                    <option value="1">Active</option>
-                    <option value="0">In-Active</option>
-                  </select>
-                </>
-              )}
-              {user.status == "0" && (
-                <>
-                  <>
-                    <select
-                      id="status"
-                      name="status"
-                      className="admin-input-select"
-                      defaultValue="0"
-                      onClick={(e) =>
-                        setUser({
-                          ...user,
-                          status: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="1">Active</option>
-                      <option value="0">In-Active</option>
-                    </select>
-                  </>
-                </>
-              )}
+              <select
+                id="status"
+                name="status"
+                className="admin-input-select"
+                value={user.status}
+                onChange={(e) =>
+                  setUser({
+                    ...user,
+                    status: e.target.value,
+                  })
+                }
+              >
+                <option value="1">Active</option>
+                <option value="0">In-Active</option>
+              </select>
             </div>
           </div>
           <div className="admin-row">
@@ -232,7 +207,7 @@ const AddUser = (type) => {
               type="submit"
               value="Submit"
               className="admin-submit"
-              disabled={user.loading === true}
+              disabled={user.loading}
             />
           </div>
         </form>

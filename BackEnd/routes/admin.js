@@ -25,13 +25,14 @@ router.put(
 
 router.delete("/delete-course", adminAuth, adminController.deleteCourse);
 
-//Instructor
-router.get("/view-instructors", adminAuth, adminController.viewInstructors);
+//Employee
 
-router.get("/get-instructor/:email", adminAuth, adminController.getInstructor);
+router.get("/view-employees", adminAuth, adminController.viewEmployees);
+
+router.get("/get-employee/:email", adminAuth, adminController.getEmployee);
 
 router.post(
-  "/add-instructor",
+  "/add-Employee",
   adminAuth,
   [
     body("email").isEmail().withMessage("Please Enter a Valid Email!"),
@@ -41,8 +42,57 @@ router.post(
     body("phone")
       .isMobilePhone()
       .withMessage("Please Enter a Valid Phone Number")
-      .isLength({ min: 11, max: 11 })
+      .isLength({ min: 10, max: 10})
+      .withMessage("Phone Number Should Be 10 Digits"),
+  ],
+  adminController.addEmployee
+);
+
+router.put(
+  "/update-employee",
+  adminAuth,
+  [
+    body("email").isEmail().withMessage("Please Enter a Valid Email!"),
+    body("password")
+      .custom(async (value) => {
+        if (!(value.length === 0 || (value.length >= 8 && value.length <= 50)))
+          throw new Error();
+      })
+      .withMessage("Password Should Be Between (8-50) Character"),
+    body("phone")
+      .isMobilePhone()
+      .withMessage("Please Enter a Valid Phone Number")
+      .isLength({ min: 10, max: 10 })
       .withMessage("Phone Number Should Be 11 Digits"),
+  ],
+  adminController.updateEmployee
+);
+
+router.delete(
+  "/delete-employee",
+  adminAuth,
+  adminController.deleteEmployee
+);
+
+
+//Instructor
+router.get("/view-instructors", adminAuth, adminController.viewInstructors);
+
+router.get("/get-instructor/:email", adminAuth, adminController.getInstructor);
+
+router.post(
+  "/add-Instructor",
+  adminAuth,
+  [
+    body("email").isEmail().withMessage("Please Enter a Valid Email!"),
+    body("password")
+      .isLength({ min: 8, max: 50 })
+      .withMessage("Password Should Be Between (8-50) Character"),
+    body("phone")
+      .isMobilePhone()
+      .withMessage("Please Enter a Valid Phone Number")
+      .isLength({ min: 10, max: 10 })
+      .withMessage("Phone Number Should Be 10 Digits"),
   ],
   adminController.addInstructor
 );
@@ -61,8 +111,8 @@ router.put(
     body("phone")
       .isMobilePhone()
       .withMessage("Please Enter a Valid Phone Number")
-      .isLength({ min: 11, max: 11 })
-      .withMessage("Phone Number Should Be 11 Digits"),
+      .isLength({ min: 10, max: 10 })
+      .withMessage("Phone Number Should Be 10 Digits"),
   ],
   adminController.updateInstructor
 );

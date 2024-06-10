@@ -19,6 +19,7 @@ const UpdateCourse = () => {
     oldStatus: "1",
     status: "1",
   });
+
   const Update = (e) => {
     e.preventDefault();
     setCourse({ ...course, loading: true, error: "", success: "" });
@@ -46,7 +47,7 @@ const UpdateCourse = () => {
           error: "",
           success: res.data,
         });
-        setTimeout(async () => {
+        setTimeout(() => {
           navigate(`/Admin/Course`);
         }, 1000);
       })
@@ -60,7 +61,7 @@ const UpdateCourse = () => {
             success: "",
             loading: false,
           });
-          setTimeout(async () => {
+          setTimeout(() => {
             navigate(`/Admin/Course`);
           }, 2000);
         } else if (err.response.status === 422) {
@@ -80,6 +81,7 @@ const UpdateCourse = () => {
         }
       });
   };
+
   useEffect(() => {
     const link = `http://localhost:4000/get-course/${id}`;
     axios
@@ -89,29 +91,30 @@ const UpdateCourse = () => {
         },
       })
       .then((res) => {
-        setCourse({
-          ...course,
+        setCourse((prevCourse) => ({
+          ...prevCourse,
           name: res.data[0].name,
           code: res.data[0].code,
           status: res.data[0].status,
           oldStatus: res.data[0].status,
           loading: false,
-        });
+        }));
       })
       .catch((err) => {
-        setCourse({
-          ...course,
+        setCourse((prevCourse) => ({
+          ...prevCourse,
           name: "",
           code: "",
           success: "",
           loading: false,
           error: "Something Went Wrong",
-        });
-        setTimeout(async () => {
+        }));
+        setTimeout(() => {
           navigate(`/Admin/Course`);
         }, 2000);
       });
-  }, [id]);
+  }, [auth.token, id, navigate]);
+
   return (
     <>
       <div className="admin-container">
@@ -175,46 +178,21 @@ const UpdateCourse = () => {
               </label>
             </div>
             <div className="admin-col-75">
-              {course.status == "1" && (
-                <>
-                  <select
-                    id="status"
-                    name="status"
-                    className="admin-input-select"
-                    defaultValue="1"
-                    onClick={(e) =>
-                      setCourse({
-                        ...course,
-                        status: e.target.value,
-                      })
-                    }
-                  >
-                    <option value="1">Active</option>
-                    <option value="0">In-Active</option>
-                  </select>
-                </>
-              )}
-              {course.status == "0" && (
-                <>
-                  <>
-                    <select
-                      id="status"
-                      name="status"
-                      className="admin-input-select"
-                      defaultValue="0"
-                      onClick={(e) =>
-                        setCourse({
-                          ...course,
-                          status: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="1">Active</option>
-                      <option value="0">In-Active</option>
-                    </select>
-                  </>
-                </>
-              )}
+              <select
+                id="status"
+                name="status"
+                className="admin-input-select"
+                value={course.status}
+                onChange={(e) =>
+                  setCourse({
+                    ...course,
+                    status: e.target.value,
+                  })
+                }
+              >
+                <option value="1">Active</option>
+                <option value="0">In-Active</option>
+              </select>
             </div>
           </div>
 
