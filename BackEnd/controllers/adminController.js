@@ -326,14 +326,32 @@ const AdminController = {
       res.status(404).json(err);
     }
   },
-  updateInstructor: async (req, res) => {
+   updateInstructor : async (req, res) => {
     try {
       const errors = validationResult(req);
-
+  
       if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
       }
-
+  
+      // Retrieve the current instructor data
+      const instructorOldData = await adminModel.getUser(req.body.oldEmail);
+      if (instructorOldData.length === 0) {
+        return res.status(404).json("Instructor Not Found");
+      }
+  
+      // Check for email and phone conflicts
+      const existingEmail = await adminModel.getUser(req.body.email);
+      if (existingEmail.length > 0 && req.body.email !== instructorOldData[0].email) {
+        return res.status(409).json("Email Already Exists");
+      }
+  
+      const existingPhone = await adminModel.getUserByPhone(req.body.phone);
+      if (existingPhone.length > 0 && req.body.phone !== instructorOldData[0].phone) {
+        return res.status(409).json("Instructor Phone Already Exists");
+      }
+  
+      // Prepare updated instructor data
       let instructor = {
         name: req.body.name,
         email: req.body.email,
@@ -341,65 +359,28 @@ const AdminController = {
         status: req.body.status,
         type: "instructor",
       };
-
+  
+      // Update password if provided and meets the criteria
       const instructorPassword = req.body.password;
-
       if (instructorPassword.length >= 8 && instructorPassword.length <= 50) {
-        instructor = Object.assign(instructor, {
-          password: await bcrypt.hash(instructorPassword, 10),
-        });
+        instructor.password = await bcrypt.hash(instructorPassword, 10);
       }
-
-      const existingEmail = await adminModel.getUser(instructor.email);
-
-      const instructorOldData = await adminModel.getUser(req.body.oldEmail);
-
-      if (
-        existingEmail.length > 0 &&
-        instructor.email != instructorOldData[0].email
-      ) {
-        return res.status(409).json("Email Already Exists");
+  
+      // Check if the status is being changed to inactive
+      if (instructor.status == "0" && instructorOldData[0].status == "1") {
+        const instructorCourses = await courseModel.getInstructorCourses(instructorOldData[0].id);
+        if (instructorCourses.length > 0) {
+          return res.status(400).json("You Should In-Active his Courses or Assign Them To Another Instructor");
+        }
       }
-
-      const existingPhone = await adminModel.getUserByPhone(instructor.phone);
-
-      if (
-        existingPhone.length > 0 &&
-        instructor.phone != instructorOldData[0].phone
-      ) {
-        return res.status(409).json("Instructor Phone Already Exists");
-      }
-
-      if (instructor.status == "1") {
-        await adminModel.updateInstructorData(
-          instructor,
-          instructorOldData[0].email
-        );
-        return res.status(200).json("Instructor Updated Successfully");
-      }
-
-      const instructorCourses = await courseModel.getInstructorCourses(
-        instructorOldData[0].id
-      );
-
-      if (instructorCourses.length === 0) {
-        await adminModel.updateInstructorData(
-          instructor,
-          instructorOldData[0].email
-        );
-        return res.status(200).json("Instructor Updated Successfully");
-      }
-
-      res
-        .status(400)
-        .json(
-          "You Should In-Active his Courses or Assign Them To Anthor Instructor"
-        );
+  
+      // Perform the update
+      await adminModel.updateInstructorData(instructor, instructorOldData[0].email);
+      return res.status(200).json("Instructor Updated Successfully");
     } catch (err) {
-      res.status(404).json(err);
+      return res.status(500).json(err);
     }
   },
-
 
   updateEmployee: async (req, res) => {
     try {
