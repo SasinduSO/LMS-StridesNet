@@ -6,7 +6,7 @@ import { getAuthUser } from "../../helper/Storage";
 
 const AddUser = ({ type }) => {
   const auth = getAuthUser();
-  console.log(auth);
+  //console.log(auth);
   const [user, setUser] = useState({
     name: "",
     password: "",

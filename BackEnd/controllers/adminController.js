@@ -203,7 +203,7 @@ const AdminController = {
 
       const instructor = {
         name: req.body.name,
-        password: req.body.password,
+        //password: req.body.password,
         email: req.body.email,
         phone: req.body.phone,
         status: req.body.status,
@@ -213,20 +213,21 @@ const AdminController = {
       const existingEmail = await adminModel.getUser(instructor.email);
 
       if (existingEmail.length > 0) {
-        return res.status(409).json("Instructor Email Is Already Exists");
+        return res.status(409).json("Instructor Email Already Exists");
       }
 
       const existingPhone = await adminModel.getUserByPhone(instructor.phone);
 
       if (existingPhone.length > 0) {
-        return res.status(409).json("Instructor Phone Is Already Exists");
+        return res.status(409).json("Instructor Phone  Already Exists");
       }
 
       //password validation
-      if (password.length >= 8 && password.length <= 50) {
-        instructor.password = await bcrypt.hash(password, 10);
+      const instructorPassword = req.body.password;
+      if (instructorPassword.length >= 8 && instructorPassword.length <= 50) {
+        instructor.password = await bcrypt.hash(instructorPassword, 10);
       }
-
+      console.log(instructor);
       await adminModel.insertInstructor(instructor);
       res.status(200).json("Instructor Added Successfully");
     } catch (err) {
@@ -244,7 +245,7 @@ const AdminController = {
 
       const employee = {
         name: req.body.name,
-        password: await bcrypt.hash(req.body.password, 10),
+       // password: await bcrypt.hash(req.body.password, 10),
         email: req.body.email,
         phone: req.body.phone,
         status: req.body.status,
@@ -263,10 +264,11 @@ const AdminController = {
         return res.status(409).json("Employee Phone Is Already Existing");
       }
 
-      //password validation
-      if (password.length >= 8 && password.length <= 50) {
-        employee.password = await bcrypt.hash(password, 10);
-      }
+       //password validation
+       const employeePassword = req.body.password;
+       if (employeePassword.length >= 8 && employeePassword.length <= 50) {
+         employee.password = await bcrypt.hash(employeePassword, 10);
+       }
       await adminModel.insertEmployee(employee);
       res.status(200).json("Employee Added Successfully");
     } catch (err) {
@@ -287,7 +289,7 @@ const AdminController = {
 
       const student = {
         name: req.body.name,
-        password: await bcrypt.hash(req.body.password, 10),
+        //password: await bcrypt.hash(req.body.password, 10),
         email: req.body.email,
         phone: req.body.phone,
         status: req.body.status,
@@ -301,10 +303,11 @@ const AdminController = {
         return res.status(409).json("Student Email Is Already Exists");
       }
 
-      //password validation
-      if (password.length >= 8 && password.length <= 50) {
-        student.password = await bcrypt.hash(password, 10);
-      }
+       //password validation
+       const studentPassword = req.body.password;
+       if (studentPassword.length >= 8 && studentPassword.length <= 50) {
+         student.password = await bcrypt.hash(studentPassword, 10);
+       }
 
       const existingPhone = await adminModel.getUserByPhone(student.phone);
 
