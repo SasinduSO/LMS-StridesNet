@@ -222,14 +222,9 @@ function Home() {
 
           <div className="st-about_text">
             <p>
-              the term lecturer may be used inmally to refer to anyone who
-              conducts lectures at a university or elsewhere, but mally refers
-              to a specific academic rank. The academic ranks in Australia are
-              similar to those in the UK, with the rank of associate professor
-              roughly equivalent to reader in UK universities. The academic
-              levels in Australia are (in ascending academic level): (A)
-              associate lecturer, (B) lecturer, (C) senior lecturer, (D)
-              associate professor, and (E) professor.
+            Dear Students,
+
+We regret to inform you that the following class has been postponed due to unforeseen circumstances:
             </p>
           </div>
         </div>
