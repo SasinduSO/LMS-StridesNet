@@ -4,7 +4,7 @@ const query = util.promisify(connection.query).bind(connection);
 
 class CourseModel {
   getCourses() {
-    const queryString = `SELECT c.name As Name, c.code As Code,c.status As Status, u.email AS 'Instructor Email'
+    const queryString = `SELECT c.name As Name, c.code As Code,c.status As Status, u.email AS 'Instructor Email', c.price AS price
     FROM course AS c
     LEFT JOIN user AS u
     ON c.instructor_id=u.id`;
@@ -12,7 +12,7 @@ class CourseModel {
     return result;
   }
   getActiveCourses() {
-    const queryString = `SELECT c.name AS CourseName, c.code, u.name AS InstructorName
+    const queryString = `SELECT c.name AS CourseName, c.code, u.name AS InstructorName, c.price AS price
     FROM course AS c
     INNER JOIN user AS u
     ON c.instructor_id=u.id
@@ -36,19 +36,24 @@ class CourseModel {
     const result = query(queryString, {
       name: courseData.name,
       code: courseData.code,
+      price: courseData.price
     });
     return result;
   }
-  updateCourse(courseData, oldCode) {
+  async updateCourse(courseData, oldCode) {
     const queryString = "UPDATE course SET ? WHERE ?";
-    const result = query(queryString, [courseData, { code: oldCode }]);
+    const result = await query(queryString, [courseData, {code: oldCode}]);
+    console.log(result);
     return result;
   }
-  deleteCourse(courseCode) {
-    const queryString = "DELETE FROM course WHERE ?";
-    const result = query(queryString, { code: courseCode });
+    async deleteCourse(courseCode) {
+    console.log(courseCode)
+    const queryString = "DELETE FROM course WHERE code = ?";
+    const result = await query(queryString, [courseCode]);
+    console.log(result)
     return result;
-  }
+}
+
   updateInstructorId(courseCode, instructorId) {
     const queryString = "UPDATE course SET ? WHERE ?";
     const result = query(queryString, [

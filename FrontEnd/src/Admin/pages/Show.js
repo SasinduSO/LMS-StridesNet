@@ -8,7 +8,7 @@ import { getAuthUser } from "../../helper/Storage";
 
 const Show = () => {
   const auth = getAuthUser();
-  console.log(auth);
+ // console.log(auth);
   let { type } = useParams();
   if (type === undefined) {
     type = "instructor";
@@ -47,7 +47,7 @@ const Show = () => {
       })
       .catch((error) => {
         console.log(error);
-        setData({ ...data, loading: false, err: "Somethinggg went wrong" });
+        setData({ ...data, loading: false, err: "Session Timed out please login again" });
       });
   }, [type,auth.token, data.reload]);
 

@@ -187,6 +187,7 @@ function Home() {
                         code={course.code}
                         name={course.CourseName}
                         instructorName={course.InstructorName}
+                        price={course.price}
                       />
                     );
                   }

@@ -26,7 +26,7 @@ function MyCourses() {
       })
       .catch((err) => {
         console.log(err);
-        setCourses({ ...courses, loading: false, err: "Something Went Wrong" });
+        setCourses({ ...courses, loading: false, err: "Session Timed Out" });
       });
   }, [courses.reload]);
 

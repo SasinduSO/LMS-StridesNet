@@ -29,7 +29,7 @@ const Main = () => {
       })
       .catch((err) => {
         console.log(err);
-        setCourses({ ...courses, loading: false, err: "Something Went Wrong" });
+        setCourses({ ...courses, loading: false, err: "Session timed out" });
       });
   }, [courses.reload]);
   return (

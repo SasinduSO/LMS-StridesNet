@@ -45,6 +45,11 @@ function CourseItem(props) {
               <p>Instructor Name</p>
               {props.instructorName}
             </h5>
+
+            <h5>
+              <p>Fee:</p>
+              {props.price}
+            </h5>
             <div className="st-products_star">
               <i className="fa-solid fa-star"></i>
               <i className="fa-solid fa-star"></i>

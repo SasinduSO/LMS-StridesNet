@@ -186,7 +186,7 @@ const AdminController = {
       if (course.length == 0) {
         return res.status(404).json("Course Is Not Exists");
       }
-
+      //console.log(course[0].code) debugging
       await courseModel.deleteCourse(course[0].code);
       res.status(200).json("Course Deleted Successfully");
     } catch (err) {
@@ -203,7 +203,7 @@ const AdminController = {
 
       const instructor = {
         name: req.body.name,
-        password: await bcrypt.hash(req.body.password, 10),
+        password: req.body.password,
         email: req.body.email,
         phone: req.body.phone,
         status: req.body.status,
@@ -220,6 +220,11 @@ const AdminController = {
 
       if (existingPhone.length > 0) {
         return res.status(409).json("Instructor Phone Is Already Exists");
+      }
+
+      //password validation
+      if (password.length >= 8 && password.length <= 50) {
+        instructor.password = await bcrypt.hash(password, 10);
       }
 
       await adminModel.insertInstructor(instructor);
@@ -258,6 +263,10 @@ const AdminController = {
         return res.status(409).json("Employee Phone Is Already Existing");
       }
 
+      //password validation
+      if (password.length >= 8 && password.length <= 50) {
+        employee.password = await bcrypt.hash(password, 10);
+      }
       await adminModel.insertEmployee(employee);
       res.status(200).json("Employee Added Successfully");
     } catch (err) {
@@ -292,6 +301,11 @@ const AdminController = {
         return res.status(409).json("Student Email Is Already Exists");
       }
 
+      //password validation
+      if (password.length >= 8 && password.length <= 50) {
+        student.password = await bcrypt.hash(password, 10);
+      }
+
       const existingPhone = await adminModel.getUserByPhone(student.phone);
 
       if (existingPhone.length > 0) {
@@ -319,7 +333,7 @@ const AdminController = {
       if (existingCode.length > 0) {
         return res.status(409).json("Course Code Is Already Exists");
       }
-
+      //console.log(course);
       await courseModel.insertCourse(course);
       res.status(200).json("Course Added Successfully");
     } catch (err) {
@@ -505,6 +519,7 @@ const AdminController = {
       const course = {
         name: req.body.name,
         code: req.body.code,
+        price: req.body.price,
         status: req.body.status,
       };
 

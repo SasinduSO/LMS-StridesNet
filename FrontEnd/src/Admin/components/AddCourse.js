@@ -10,6 +10,7 @@ const AddCourse = () => {
   const [course, setCourse] = useState({
     name: "",
     code: "",
+    price:"",
     loading: false,
     success: "",
     error: "",
@@ -22,7 +23,7 @@ const AddCourse = () => {
     axios
       .post(
         link,
-        { name: course.name, code: course.code },
+        { name: course.name, code: course.code, price: course.price },
         {
           headers: {
             token: auth.token,
@@ -33,6 +34,7 @@ const AddCourse = () => {
         setCourse({
           name: "",
           code: "",
+          price:"",
           loading: false,
           error: "",
           success: res.data,
@@ -57,7 +59,8 @@ const AddCourse = () => {
           setCourse({
             name: "",
             code: "",
-            error: "Something Went Wrong",
+            price:"",
+            error: "Course Registration failed with no response",
             loading: false,
             success: "",
           });
@@ -102,6 +105,28 @@ const AddCourse = () => {
               />
             </div>
           </div>
+
+          <div className="admin-row">
+            <div className="admin-col-25">
+              <label key="price" className="admin-label">
+                Price (LKR)
+              </label>
+            </div>
+            <div className="admin-col-75">
+              <input
+                type="number"
+                placeholder="Course Price"
+                id="price"
+                className="admin-input-select"
+                required
+                value={course.price}
+                onChange={(e) => setCourse({ ...course, price: parseFloat(e.target.value) })}
+                min="0"
+                step="0.01"
+              />
+            </div>
+          </div>
+
           <div className="admin-row">
             <div className="admin-col-25">
               <label key="code" className="admin-label">
