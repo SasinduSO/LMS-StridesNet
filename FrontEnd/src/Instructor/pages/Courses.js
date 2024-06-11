@@ -21,7 +21,7 @@ const Courses = () => {
         headers: { token: auth.token, email: auth.email },
       })
       .then((resp) => {
-        setCourses({ ...courses, results: resp.data, loading: false });
+        setCourses({ ...courses, results: resp.data, loading: false }); //results from response are set here
       })
       .catch((err) => {
         console.log(err);
@@ -41,7 +41,9 @@ const Courses = () => {
           </Link>
         ),
       });
+
     });
+
   }
 
   return (

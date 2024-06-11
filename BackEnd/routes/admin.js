@@ -2,6 +2,7 @@ const router = require("express").Router();
 const adminController = require("../controllers/adminController");
 const { body } = require("express-validator");
 const adminAuth = require("../middleware/adminAuth");
+const instructorAuth = require("../middleware/instructorAuth");
 const { reconstructFieldPath } = require("express-validator/src/select-fields");
 
 //Course
@@ -12,6 +13,14 @@ router.get("/get-course/:code", adminAuth, adminController.getCourse);
 router.post(
   "/add-course",
   adminAuth,
+  [body("code").isInt({ min: 0 }).withMessage("Please Enter a Valid Code")],
+  adminController.addCourse
+);
+
+//instructor add course router
+router.post(
+  "/add-insCourse",
+  instructorAuth,
   [body("code").isInt({ min: 0 }).withMessage("Please Enter a Valid Code")],
   adminController.addCourse
 );

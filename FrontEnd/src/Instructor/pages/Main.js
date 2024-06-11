@@ -9,6 +9,7 @@ import { getAuthUser } from "../../helper/Storage";
 
 const Main = () => {
   const auth = getAuthUser();
+  const type = "course";
   const [courses, setCourses] = useState({
     loading: true,
     results: [],
@@ -38,10 +39,14 @@ const Main = () => {
         <div className="text">
           <i>
             {" "}
-            in Strides-Net you can manage<br></br> your courses eaily
+            In Strides-Net you can manage<br></br> your courses eaily
+            <br></br>
+            Tap below to start teaching a new course!
           </i>
         </div>
-        <Link to="/Instructor/Courses" className="Ins-Link">
+
+        
+        <Link to={"/Instructor/add/"+type} className="Ins-Link">
           {" "}
           Courses{" "}
         </Link>
@@ -49,6 +54,7 @@ const Main = () => {
       <br></br>
       <br></br>
       <div>
+        <div className="text">These are the Courses you are Teaching!</div>
         <div className="Instructor-course-list">
           {courses.loading === false &&
             courses.err == null &&
@@ -59,6 +65,7 @@ const Main = () => {
                   key={item.code}
                   name={item.name}
                   code={item.code}
+                  EnrolledStudents={item.EnrolledStudents}
                 />
               );
             })}

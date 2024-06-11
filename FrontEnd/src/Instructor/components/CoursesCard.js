@@ -10,6 +10,7 @@ const CoursesCard = (props) => {
       <div className="Instructor-card-info">
         <h4 className="ins-title">{props.name}</h4>
         <p className="ins-btn">Code: {props.code}</p>
+        <p className="ins-btn">Students Enrolled: {props.EnrolledStudents}</p>
       </div>
     </div>
   );

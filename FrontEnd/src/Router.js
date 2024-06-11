@@ -18,7 +18,7 @@ import Admin from "./middleware/Admin";
 import Student from "./middleware/Student";
 import Instructor from "./middleware/Instructor";
 import AddUser from "./Admin/components/AddUser";
-
+import InstructorAdd from "./Instructor/pages/InstructorAdd";
 
 export const router = createBrowserRouter([
   {
@@ -135,6 +135,14 @@ export const router = createBrowserRouter([
           {
             path: "/Instructor",
             element: <Main />,
+          },
+          {
+            path: "/Instructor/Add",
+            element: <InstructorAdd />,
+          },
+          {
+            path: "/Instructor/Add/:type",
+            element: <InstructorAdd />,
           },
           {
             path: "/Instructor/Main",

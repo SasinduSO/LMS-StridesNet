@@ -8,6 +8,7 @@ export const setAuthUser = (token, user) => {
 
 export const getAuthUser = () => {
   const user = localStorage.getItem('user');
+  //console.log(user);
   const token = localStorage.getItem('token');
   if (user && token) {
     return { ...JSON.parse(user), token };

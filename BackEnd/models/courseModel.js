@@ -36,7 +36,8 @@ class CourseModel {
     const result = query(queryString, {
       name: courseData.name,
       code: courseData.code,
-      price: courseData.price
+      price: courseData.price,
+      instructor_id: courseData.instructor_id
     });
     return result;
   }
@@ -67,9 +68,15 @@ class CourseModel {
     return result;
   }
   getInstructorCourses(instructorId) {
-    const queryString = `SELECT c.name, c.code
-    FROM course as c
-    WHERE c.instructor_id = ?`;
+
+    const queryString = `
+    SELECT c.name, c.code, COUNT(sc.student_id) AS EnrolledStudents
+    FROM course AS c
+    LEFT JOIN studentcourse AS sc ON c.id = sc.course_id
+    WHERE c.instructor_id = ?
+    GROUP BY c.id;
+  `;
+    
     const result = query(queryString, instructorId);
     return result;
   }

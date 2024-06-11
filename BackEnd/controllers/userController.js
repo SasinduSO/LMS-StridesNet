@@ -26,11 +26,11 @@ const userController = {
       }
 
       const user = await userModel.checkEmailExists(loginData.email);
-      console.log("User fetched from DB: ", user);
-      console.log(loginData.password);
+      //console.log("User fetched from DB: ", user);
+      //console.log(loginData.password);
       const storedPassword = user[0].password.trim(); // Trim any leading or trailing whitespace
       const inputpw= loginData.password.trim();
-      console.log(storedPassword);
+      //console.log(storedPassword);
 
       if (user.length === 0) {
         return res.status(400).json({
@@ -78,6 +78,7 @@ const userController = {
 
         // Include the type in the response user object
         delete user[0].password;
+       // console.log(user[0]);
         return res.status(200).json({ user: user[0], token });
       }
 

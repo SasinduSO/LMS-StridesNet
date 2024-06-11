@@ -51,7 +51,7 @@ function Login() {
           setLogin({
             ...login,
             loading: false,
-            err: "Something went wrong",
+            err: "Login Response Failed",
           });
         }
       });
