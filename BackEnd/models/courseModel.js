@@ -41,6 +41,19 @@ class CourseModel {
     });
     return result;
   }
+  createMaterialsTable = async (courseId) => {
+    const createMaterialsTableQuery = `
+        CREATE TABLE course_${courseId}_materials (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(50) NOT NULL,
+            note VARCHAR(255),
+            material LONGBLOB, -- or appropriate type for your use case
+            upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            
+        )
+    `;
+    await query(createMaterialsTableQuery);
+  };
   async updateCourse(courseData, oldCode) {
     const queryString = "UPDATE course SET ? WHERE ?";
     const result = await query(queryString, [courseData, {code: oldCode}]);

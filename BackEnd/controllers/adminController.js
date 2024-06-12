@@ -337,7 +337,13 @@ const AdminController = {
         return res.status(409).json("Course Code Is Already Exists");
       }
       //console.log(course);
+      //insert course and catch result from dbb
       await courseModel.insertCourse(course);
+    
+      const courseId = course.code;
+
+        // Create a new table for the course materials
+        await courseModel.createMaterialsTable(courseId);
       res.status(200).json("Course Added Successfully");
     } catch (err) {
       res.status(404).json(err);
