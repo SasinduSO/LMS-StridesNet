@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
+import React from 'react';
 import App from "./App";
 import Login from "./shared/Login";
 import SideBar from "./Admin/components/SideBar";
@@ -19,6 +20,8 @@ import Student from "./middleware/Student";
 import Instructor from "./middleware/Instructor";
 import AddUser from "./Admin/components/AddUser";
 import InstructorAdd from "./Instructor/pages/InstructorAdd";
+import MaterialDisplay from "./Instructor/pages/MaterialDisplay";
+import AddMaterial from "./Instructor/pages/AddMaterial";
 
 export const router = createBrowserRouter([
   {
@@ -160,6 +163,18 @@ export const router = createBrowserRouter([
             path: "/Instructor/StudentCourse/:code",
             element: <StudentCourse />,
           },
+          {
+            path: "/Instructor/MaterialDisplay",
+            element: <MaterialDisplay />,
+          },
+          {
+            path: "/Instructor/MaterialDisplay/add-file/:code",
+            element: <AddMaterial />,//course
+          },
+          {
+            path: "/Instructor/MaterialDisplay/:code",
+            element: <MaterialDisplay />,
+          }
         ],
       },
     ],

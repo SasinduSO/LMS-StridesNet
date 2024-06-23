@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import img10 from "../assets/imgs/Business.jpg";
 import { getAuthUser } from "../../helper/Storage";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 
 function CourseItem(props) {
   const auth = getAuthUser();

@@ -20,16 +20,17 @@ function Home() {
   });
 
   useEffect(() => {
-    setCourses({ ...courses, loading: true });
-    axios
-      .get("http://localhost:4000/home")
-      .then((resp) => {
-        setCourses({ ...courses, results: resp.data, loading: false });
-      })
-      .catch((err) => {
+    const fetchData = async () => {
+      setCourses((prevCourses) => ({ ...prevCourses, loading: true }));
+      try {
+        const resp = await axios.get("http://localhost:4000/home");
+        setCourses((prevCourses) => ({ ...prevCourses, results: resp.data, loading: false }));
+      } catch (err) {
         console.log(err);
-        setCourses({ ...courses, loading: false, err: "No Courses Exist" });
-      });
+        setCourses((prevCourses) => ({ ...prevCourses, loading: false, err: "No Courses Exist" }));
+      }
+    };
+    fetchData();
   }, [courses.reload]);
 
   function selectImage(small) {
@@ -40,9 +41,11 @@ function Home() {
       console.log("Image not defined or has no src property.");
     }
   }
-  let instructors = [],
-    x = 0,
-    y = 0;
+
+  const instructors = [];
+  let x = 0;
+  let y = 0;
+
   return (
     <>
       <section className="st-main-page">
@@ -124,12 +127,10 @@ function Home() {
           {courses.loading === false &&
             courses.results.map((instructor) => {
               if (
-                !instructors.includes(
-                  JSON.stringify(instructor.InstructorName)
-                ) &&
-                x !== 3
+                !instructors.includes(instructor.InstructorName) &&
+                x < 3
               ) {
-                instructors.push(JSON.stringify(instructor.InstructorName));
+                instructors.push(instructor.InstructorName);
                 x++;
                 return (
                   <div key={x} className="st-review_card">
@@ -138,7 +139,6 @@ function Home() {
                         <div className="st-profile_image">
                           <img src={img3} alt="" />
                         </div>
-
                         <div className="st-name">
                           <strong>{instructor.InstructorName}</strong>
                         </div>
@@ -157,6 +157,7 @@ function Home() {
                   </div>
                 );
               }
+              return null;
             })}
         </div>
       </div>
@@ -180,10 +181,11 @@ function Home() {
               )}
               {courses.loading === false &&
                 courses.results.map((course) => {
-                  if (y++ <= 3) {
+                  if (y < 4) {
+                    y++;
                     return (
                       <CourseItem
-                        key={y}
+                        key={course.code}
                         code={course.code}
                         name={course.CourseName}
                         instructorName={course.InstructorName}
@@ -191,6 +193,7 @@ function Home() {
                       />
                     );
                   }
+                  return null;
                 })}
             </div>
             {y >= 4 && (
@@ -214,17 +217,15 @@ function Home() {
               <img src={img8} onClick={(e) => selectImage(e.target)} alt="" />
               <img src={img4} onClick={(e) => selectImage(e.target)} alt="" />
             </div>
-
             <div className="st-image_contaner">
               <img src={img6} id="imagebox" width={"650px"} alt="" />
             </div>
           </div>
-
           <div className="st-about_text">
             <p>
-            Dear Students,
-
-We regret to inform you that the following class has been postponed due to unforeseen circumstances:
+              Dear Students,
+              <br />
+              We regret to inform you that the following class has been postponed due to unforeseen circumstances:
             </p>
           </div>
         </div>
@@ -232,4 +233,5 @@ We regret to inform you that the following class has been postponed due to unfor
     </>
   );
 }
+
 export default Home;

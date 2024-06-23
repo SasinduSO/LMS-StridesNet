@@ -1,4 +1,5 @@
 import "../styleShared/Table.css";
+import React from 'react';
 
 const DynamicTable = (TableData, type) => {
   // get table column

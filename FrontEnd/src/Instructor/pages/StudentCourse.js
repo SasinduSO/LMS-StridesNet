@@ -1,5 +1,5 @@
 import "../style/StudentCourses.css";
-import DynamicTable from "../../shared/DynamicTable";
+import DynamicTable2 from "../../shared/DynamicTable2";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { getAuthUser } from "../../helper/Storage";
@@ -15,24 +15,25 @@ const StudentCourse = () => {
     err: null,
     reload: 0,
   });
+
   useEffect(() => {
-    setCourses({ ...courses, loading: true });
+    setCourses((prevCourses) => ({ ...prevCourses, loading: true }));
     axios
       .get("http://localhost:4000/view-enrolled-students", {
         headers: { token: auth.token, code: code },
       })
       .then((resp) => {
-        setCourses({ ...courses, results: resp.data, loading: false });
+        setCourses((prevCourses) => ({ ...prevCourses, results: resp.data, loading: false }));
       })
       .catch((err) => {
         console.log(err);
-        setCourses({
-          ...courses,
+        setCourses((prevCourses) => ({
+          ...prevCourses,
           loading: false,
           err: "Something Went Wrong",
-        });
+        }));
       });
-  }, [courses.reload]);
+  }, [courses.reload, code, auth.token]);
 
   const setGrade = (email, grade) => {
     if (grade === "") {
@@ -49,63 +50,58 @@ const StudentCourse = () => {
         }
       )
       .then((res) => {
-        setCourses({ ...courses, reload: courses.reload + 1 });
+        setCourses((prevCourses) => ({ ...prevCourses, reload: prevCourses.reload + 1 }));
       })
       .catch((error) => {
         if (error.response.status === 422) {
           const errorMsg = error.response.data.errors[0].msg;
-          setCourses({ ...courses, loading: false, err: errorMsg });
+          setCourses((prevCourses) => ({ ...prevCourses, loading: false, err: errorMsg }));
         } else {
-          setCourses({
-            ...courses,
+          setCourses((prevCourses) => ({
+            ...prevCourses,
             loading: false,
             err: "Something Went Wrong",
-          });
+          }));
         }
       });
   };
 
-  let TableData;
+  let TableData = [];
   if (Array.isArray(courses.results)) {
-    courses.results.forEach((result) => {
-      result = Object.assign(result, {
-        Grade: (
-          <input
-            type="number"
-            max="100"
-            min="0"
-            onChange={(e) => {
-              result.StudentGrade = e.target.value;
-            }}
-          />
-        ),
-        Update: (
-          <input
-            type="submit"
-            className="student-submit"
-            onClick={(e) => {
-              setGrade(result.StudentEmail, result.StudentGrade);
-            }}
-          />
-        ),
-      });
-    });
-
-    TableData = courses.results.map((obj) => {
-      const { CourseName, ...rest } = obj;
-      return rest;
-    });
+    TableData = courses.results.map((result) => ({
+      ...result,
+      Grade: (
+        <input
+          type="number"
+          max="100"
+          min="0"
+          onChange={(e) => {
+            result.StudentGrade = e.target.value;
+          }}
+        />
+      ),
+      Update: (
+        <input
+          type="submit"
+          className="student-submit"
+          onClick={() => {
+            setGrade(result.StudentEmail, result.StudentGrade);
+          }}
+        />
+      ),
+    }));
   }
 
   return (
     <>
       {courses.loading === false &&
         courses.err === null &&
-        Array.isArray(courses.results) &&
-        DynamicTable(TableData, courses.results[0].CourseName)}
+        Array.isArray(courses.results) && (
+          <DynamicTable2 TableData={TableData} type={courses.results[0].CourseName} />
+        )}
 
       {courses.loading === false &&
-        courses.err == null &&
+        courses.err === null &&
         !Array.isArray(courses.results) &&
         courses.results && (
           <Alert
@@ -122,7 +118,6 @@ const StudentCourse = () => {
 
       {courses.loading === false && courses.err != null && (
         <>
-          {" "}
           <Alert
             key="danger"
             variant="danger"
@@ -136,7 +131,7 @@ const StudentCourse = () => {
             {courses.err}
           </Alert>
           <br />
-          <button className="showbtn" onClick={(e) => window.location.reload()}>
+          <button className="showbtn" onClick={() => window.location.reload()}>
             Back
           </button>
           <br />

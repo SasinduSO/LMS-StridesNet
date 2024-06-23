@@ -23,7 +23,7 @@ const AddUser = ({ type }) => {
     e.preventDefault();
     setUser({ ...user, loading: true, error: "", success: "" });
     const link = `http://localhost:4000/add-${type}`; //${type}
-    console.log(`Sending request to: ${link}`); // Debugging log
+    //console.log(`Sending request to: ${link}`); // Debugging log
     axios
       .post(
         link,

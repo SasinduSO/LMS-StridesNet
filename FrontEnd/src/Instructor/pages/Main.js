@@ -16,8 +16,9 @@ const Main = () => {
     err: null,
     reload: 0,
   });
+
   useEffect(() => {
-    setCourses({ ...courses, loading: true });
+    setCourses((prevCourses) => ({ ...prevCourses, loading: true }));
     axios
       .get("http://localhost:4000/view-instructor-courses", {
         headers: {
@@ -26,49 +27,54 @@ const Main = () => {
         },
       })
       .then((resp) => {
-        setCourses({ ...courses, results: resp.data, loading: false });
+        setCourses((prevCourses) => ({
+          ...prevCourses,
+          results: resp.data,
+          loading: false,
+        }));
       })
       .catch((err) => {
         console.log(err);
-        setCourses({ ...courses, loading: false, err: "Session timed out" });
+        setCourses((prevCourses) => ({
+          ...prevCourses,
+          loading: false,
+          err: "Session timed out",
+        }));
       });
-  }, [courses.reload]);
+  }, [courses.reload, auth.email, auth.token]);
+
   return (
     <>
       <div className="InstructorContainer">
         <div className="text">
           <i>
-            {" "}
-            In Strides-Net you can manage<br></br> your courses eaily
-            <br></br>
+            In Strides-Net you can manage
+            <br />
+            your courses easily
+            <br />
             Tap below to start teaching a new course!
           </i>
         </div>
-
-        
-        <Link to={"/Instructor/add/"+type} className="Ins-Link">
-          {" "}
-          Courses{" "}
+        <Link to={`/Instructor/add/${type}`} className="Ins-Link">
+          Add Courses
         </Link>
       </div>
-      <br></br>
-      <br></br>
+      <br />
+      <br />
       <div>
         <div className="text">These are the Courses you are Teaching!</div>
         <div className="Instructor-course-list">
           {courses.loading === false &&
             courses.err == null &&
             Array.isArray(courses.results) &&
-            courses.results.map((item) => {
-              return (
-                <CoursesCard
-                  key={item.code}
-                  name={item.name}
-                  code={item.code}
-                  EnrolledStudents={item.EnrolledStudents}
-                />
-              );
-            })}
+            courses.results.map((item) => (
+              <CoursesCard
+                key={item.code}
+                name={item.name}
+                code={item.code}
+                EnrolledStudents={item.EnrolledStudents}
+              />
+            ))}
           {courses.loading === false &&
             courses.err == null &&
             !Array.isArray(courses.results) &&

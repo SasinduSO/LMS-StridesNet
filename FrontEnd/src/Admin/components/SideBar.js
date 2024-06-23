@@ -2,6 +2,7 @@ import '../style/SideBar.css';
 import '../../index.js';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import React from 'react';
 
 const SideBar =()=>{
   var {type}=useParams();

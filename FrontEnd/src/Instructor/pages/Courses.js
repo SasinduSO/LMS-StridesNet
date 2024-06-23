@@ -14,36 +14,46 @@ const Courses = () => {
     err: null,
     reload: 0,
   });
+
   useEffect(() => {
-    setCourses({ ...courses, loading: true });
+    setCourses((prevCourses) => ({ ...prevCourses, loading: true }));
     axios
       .get("http://localhost:4000/view-courses-with-students", {
         headers: { token: auth.token, email: auth.email },
       })
       .then((resp) => {
-        setCourses({ ...courses, results: resp.data, loading: false }); //results from response are set here
+        setCourses((prevCourses) => ({
+          ...prevCourses,
+          results: resp.data,
+          loading: false,
+        }));
       })
       .catch((err) => {
         console.log(err);
-        setCourses({ ...courses, loading: false, err: "Session Timed OUt" });
+        setCourses((prevCourses) => ({
+          ...prevCourses,
+          loading: false,
+          err: "Session Timed Out",
+        }));
       });
-  }, [courses.reload]);
+  }, [courses.reload, auth.token, auth.email]);
 
   if (Array.isArray(courses.results)) {
     courses.results.forEach((result) => {
-      result = Object.assign(result, {
+      Object.assign(result, {
         AboutCourse: (
           <Link
-            to={`/Instructor/StudentCourse/${result.CourseCode}`}
+            to={`/Instructor/MaterialDisplay/${result.CourseCode}`}
             className="Ins-Link"
           >
-            More details
+          
+            More details about ({result.CourseCode})
           </Link>
+          
         ),
+        
       });
-
     });
-
   }
 
   return (

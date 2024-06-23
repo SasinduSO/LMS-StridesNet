@@ -11,46 +11,53 @@ function MyCourses() {
   const [courses, setCourses] = useState({
     loading: true,
     results: [],
-    courseGrade: "",
     err: null,
     reload: 0,
   });
+
   useEffect(() => {
-    setCourses({ ...courses, loading: true });
+    setCourses(prevCourses => ({ ...prevCourses, loading: true })); // Functional update to ensure correct state reference
     axios
       .get("http://localhost:4000/get-my-courses", {
         headers: { token: auth.token, email: auth.email },
       })
       .then((resp) => {
-        setCourses({ ...courses, results: resp.data, loading: false });
+        setCourses((prevCourses) => ({
+          ...prevCourses,
+          results: resp.data,
+          loading: false,
+        }));
       })
       .catch((err) => {
         console.log(err);
-        setCourses({ ...courses, loading: false, err: "Session Timed Out" });
+        setCourses((prevCourses) => ({
+          ...prevCourses,
+          loading: false,
+          err: "Session Timed Out",
+        }));
       });
-  }, [courses.reload]);
+  }, [courses.reload, auth.email, auth.token]); // Dependencies are now correct
 
   return (
     <>
-      {courses.loading === false && courses.err === null && (
+      {courses.loading && <p>Loading...</p>}
+      {!courses.loading && courses.err === null && (
         <section className="st-courses" id="courses">
           <div className="st-products" id="Products">
-            <section className="container-fluid ">
+            <section className="container-fluid">
               <h1 className="text-center pt-5">My Courses</h1>
               <div className="row py-5">
-                {Array.isArray(courses.results) &&
-                  courses.results.map((course) => {
-                    return (
-                      <MyCourseItem
-                        key={course.code}
-                        code={course.code}
-                        name={course.CourseName}
-                        instructorName={course.InstructorName}
-                        grade={course.grade}
-                      />
-                    );
-                  })}
-                {!Array.isArray(courses.results) && courses.results && (
+                {Array.isArray(courses.results) && courses.results.length > 0 ? (
+                  courses.results.map((course) => (
+                    <MyCourseItem
+                      key={course.code}
+                      code={course.code}
+                      name={course.CourseName}
+                      instructorName={course.InstructorName}
+                      grade={course.grade}
+                    />
+                  ))
+                ) : (
                   <Alert
                     variant="info"
                     style={{
@@ -59,7 +66,7 @@ function MyCourses() {
                       textAlign: "center",
                     }}
                   >
-                    {courses.results}
+                    No courses available.
                   </Alert>
                 )}
               </div>
@@ -67,7 +74,7 @@ function MyCourses() {
           </div>
         </section>
       )}
-      {courses.loading === false && courses.err != null && (
+      {!courses.loading && courses.err !== null && (
         <Alert
           key="danger"
           variant="danger"

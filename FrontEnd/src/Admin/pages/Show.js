@@ -8,7 +8,6 @@ import { getAuthUser } from "../../helper/Storage";
 
 const Show = () => {
   const auth = getAuthUser();
- // console.log(auth);
   let { type } = useParams();
   if (type === undefined) {
     type = "instructor";
@@ -24,12 +23,11 @@ const Show = () => {
   });
 
   useEffect(() => {
-    setData({ ...data, loading: true });
+    setData((prevData) => ({ ...prevData, loading: true }));
     const link = `http://localhost:4000/view-${type}s`;
 
     console.log('Auth Token:', auth.token);
     console.log('Request URL:', link);
-    
 
     axios
       .get(link, {
@@ -38,68 +36,63 @@ const Show = () => {
         },
       })
       .then((res) => {
-        setData({
-          ...data,
+        setData((prevData) => ({
+          ...prevData,
           results: res.data,
           loading: false,
           err: null,
-        });
+        }));
       })
       .catch((error) => {
         console.log(error);
-        setData({ ...data, loading: false, err: "Session Timed out please login again" });
+        setData((prevData) => ({
+          ...prevData,
+          loading: false,
+          err: "Session Timed out please login again",
+        }));
       });
-  }, [type,auth.token, data.reload]);
+  }, [type, auth.token, data.reload]);
 
   const deleteData = (item) => {
     const link = `http://localhost:4000/delete-${type}`;
-    setData({ ...data, loading: true });
+    setData((prevData) => ({ ...prevData, loading: true }));
 
-    if (type === "course") {
-      axios
-        .delete(link, {
+    const deleteRequest = type === "course" 
+      ? axios.delete(link, {
           data: { code: item },
-          headers: {
-            token: auth.token,
-          },
+          headers: { token: auth.token },
         })
-        .then((res) => {
-          setData({ ...data, loading: false, reload: data.reload + 1 });
-        })
-        .catch((error) => {
-          console.log(error);
-          if (error.response.status === 404) {
-            setData({ ...data, loading: false, err: "Something Wentt Wrong" });
-          } else {
-            setData({ ...data, loading: false, err: error.response.data });
-          }
-        });
-    } else {
-      axios
-        .delete(link, {
+      : axios.delete(link, {
           data: { email: item },
-          headers: {
-            token: auth.token,
-          },
-        })
-        .then((res) => {
-          setData({ ...data, loading: false, reload: data.reload + 1 });
-        })
-        .catch((error) => {
-          console.log(error);
-          if (error.response.status === 404) {
-            setData({ ...data, loading: false, err: "Something Went Wrong" });
-          } else {
-            setData({ ...data, loading: false, err: error.response.data });
-          }
+          headers: { token: auth.token },
         });
-    }
+
+    deleteRequest
+      .then((res) => {
+        setData((prevData) => ({
+          ...prevData,
+          loading: false,
+          reload: prevData.reload + 1,
+        }));
+      })
+      .catch((error) => {
+        console.log(error);
+        const errorMessage = error.response.status === 404
+          ? "Something Went Wrong"
+          : error.response.data;
+        setData((prevData) => ({
+          ...prevData,
+          loading: false,
+          err: errorMessage,
+        }));
+      });
   };
 
   if (Array.isArray(data.results)) {
     data.results.forEach((result) => {
-      if (type === "course" && result["Instructor Email"] === null)
+      if (type === "course" && result["Instructor Email"] === null) {
         result["Instructor Email"] = "none";
+      }
 
       result.Status =
         typeof result.Status === "number"
@@ -107,7 +100,7 @@ const Show = () => {
             ? "Active"
             : "In-Active"
           : result.Status;
-      result = Object.assign(result, {
+      Object.assign(result, {
         Update: (
           <Link to={`/Admin/Update/${type}/${result.Code || result.Email}`}>
             <i className="fa-solid fa-pen-to-square"></i>
@@ -117,9 +110,7 @@ const Show = () => {
           <Link>
             <i
               className="fa-solid fa-trash"
-              onClick={(e) => {
-                deleteData(result.Code || result.Email);
-              }}
+              onClick={() => deleteData(result.Code || result.Email)}
             ></i>
           </Link>
         ),
@@ -167,7 +158,7 @@ const Show = () => {
           </Alert>
 
           <br />
-          <button className="showbtn" onClick={(e) => window.location.reload()}>
+          <button className="showbtn" onClick={() => window.location.reload()}>
             Back
           </button>
           <br />
@@ -177,4 +168,5 @@ const Show = () => {
     </>
   );
 };
+
 export default Show;

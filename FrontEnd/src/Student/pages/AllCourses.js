@@ -16,41 +16,44 @@ function AllCourses() {
   });
 
   useEffect(() => {
-    setCourses({ ...courses, loading: true });
-    axios
-      .get("http://localhost:4000/get-all-courses", {
-        headers: { token: auth.token, email: auth.email },
-      })
-      .then((resp) => {
-        setCourses({ ...courses, results: resp.data, loading: false });
-      })
-      .catch((err) => {
+    const fetchCourses = async () => {
+      setCourses((prevState) => ({ ...prevState, loading: true }));
+      try {
+        const resp = await axios.get("http://localhost:4000/get-all-courses", {
+          headers: { token: auth.token, email: auth.email },
+        });
+        setCourses((prevState) => ({ ...prevState, results: resp.data, loading: false }));
+      } catch (err) {
         console.log(err);
-        setCourses({ ...courses, loading: false, err: "Session Timed Out" });
-      });
-  }, [courses.reload]);
+        setCourses((prevState) => ({ ...prevState, loading: false, err: "Session Timed Out" }));
+      }
+    };
+
+    fetchCourses();
+  }, [courses.reload, auth.email, auth.token]);
 
   return (
     <>
-      {" "}
+      {courses.loading && (
+        <div className="loading">Loading...</div>
+      )}
+
       {courses.loading === false && courses.err === null && (
         <section className="st-courses" id="courses">
           <div className="st-products" id="Products">
             <h1>COURSES</h1>
             <section className="container-fluid">
               <div className="row">
-                {Array.isArray(courses.results) &&
-                  courses.results.map((course) => {
-                    return (
-                      <CourseItem
-                        key={course.code}
-                        code={course.code}
-                        name={course.CourseName}
-                        instructorName={course.InstructorName}
-                      />
-                    );
-                  })}
-                {!Array.isArray(courses.results) && courses.results && (
+                {Array.isArray(courses.results) && courses.results.length > 0 ? (
+                  courses.results.map((course) => (
+                    <CourseItem
+                      key={course.code}
+                      code={course.code}
+                      name={course.CourseName}
+                      instructorName={course.InstructorName}
+                    />
+                  ))
+                ) : (
                   <Alert
                     variant="info"
                     style={{
@@ -59,7 +62,7 @@ function AllCourses() {
                       textAlign: "center",
                     }}
                   >
-                    {courses.results}
+                    No courses available
                   </Alert>
                 )}
               </div>
@@ -67,6 +70,7 @@ function AllCourses() {
           </div>
         </section>
       )}
+
       {courses.loading === false && courses.err != null && (
         <Alert
           key="danger"
