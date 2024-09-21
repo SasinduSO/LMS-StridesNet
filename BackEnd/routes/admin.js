@@ -95,7 +95,10 @@ router.post(
   [
     body("email").isEmail().withMessage("Please Enter a Valid Email!"),
     body("password")
-      .isLength({ min: 8, max: 50 })
+      .custom(async (value) => {
+        if (!(value.length === 0 || (value.length >= 8 && value.length <= 50)))
+          throw new Error();
+      })
       .withMessage("Password Should Be Between (8-50) Character"),
     body("phone")
       .isMobilePhone()

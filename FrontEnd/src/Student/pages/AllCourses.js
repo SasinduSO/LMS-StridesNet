@@ -4,9 +4,11 @@ import CourseItem from "../components/CourseItem";
 import "../assets/style/allCourses.css";
 import { getAuthUser } from "../../helper/Storage";
 import Alert from "react-bootstrap/Alert";
+import { useNavigate } from "react-router-dom"; 
 
 function AllCourses() {
   const auth = getAuthUser();
+  const navigate = useNavigate();
 
   const [courses, setCourses] = useState({
     loading: true,
@@ -32,6 +34,7 @@ function AllCourses() {
     fetchCourses();
   }, [courses.reload, auth.email, auth.token]);
 
+
   return (
     <>
       {courses.loading && (
@@ -50,6 +53,7 @@ function AllCourses() {
                       key={course.code}
                       code={course.code}
                       name={course.CourseName}
+                      price = {course.price}
                       instructorName={course.InstructorName}
                     />
                   ))

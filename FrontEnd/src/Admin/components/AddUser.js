@@ -59,7 +59,7 @@ const AddUser = ({ type }) => {
           setUser({
             ...user,
             loading: false,
-            error: err.response.data.message || "Conflict error this user already exists in the system",
+            error: err.response.data.message || "Conflict error this user already exists in the system", //error messages
             success: "",
           });
         } else if (err.response && err.response.status === 422) {
@@ -77,7 +77,7 @@ const AddUser = ({ type }) => {
             password: "",
             email: "",
             phone: "",
-            error: "User regsitration failed",
+            error: "User regsitration failed", //error message
             success: "",
             loading: false,
           });

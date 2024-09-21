@@ -9,46 +9,58 @@ const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 
 //const SECRET_KEY = process.env.JWT_SECRET_KEY || "your_default_secret_key"; // Use environment variable or a default secret key
-
 const AdminController = {
   viewInstructors: async (req, res) => {
     try {
+      // Retrieve all instructors from the admin model
       const instructors = await adminModel.getInstructors();
 
+      // Check if no instructors were found
       if (instructors.length == 0) {
         return res.status(200).json("No Instructors Found");
       }
 
+      // Return the list of instructors with a status of 200 (OK)
       res.status(200).json(instructors);
     } catch (err) {
+      // If an error occurs, return a status of 404 (Not Found) with the error message
       res.status(404).json(err);
     }
   },
   
-    viewEmployees: async (req, res) => {
+    // Function to view all employees
+  viewEmployees: async (req, res) => {
     try {
+      // Retrieve all employees from the admin model
       const employees = await adminModel.getEmployees();
 
+      // Check if no employees were found
       if (employees.length == 0) {
         return res.status(200).json("No Assistants Found");
       }
 
+      // Return the list of employees with a status of 200 (OK)
       res.status(200).json(employees);
     } catch (err) {
+      // If an error occurs, return a status of 404 (Not Found) with the error message
       res.status(404).json(err);
     }
   },
   
   viewStudents: async (req, res) => {
     try {
+      // Retrieve all students from the admin model
       const students = await adminModel.getStudents();
 
+      // Check if no students were found
       if (students.length == 0) {
         return res.status(200).json("No Students Found");
       }
 
+      // Return the list of students with a status of 200 (OK)
       res.status(200).json(students);
     } catch (err) {
+      // If an error occurs, return a status of 404 (Not Found) with the error message
       res.status(404).json(err);
     }
   },
@@ -111,14 +123,18 @@ const AdminController = {
 
   getStudent: async (req, res) => {
     try {
+      // Retrieve the student by email from the student model
       const student = await studentModel.getStudentByEmail(req.params.email);
-
+  
+      // Check if no student was found
       if (student.length == 0) {
         return res.status(400).json("Student Not Found");
       }
-
+  
+      // Return the student data with a status of 200 (OK)
       res.status(200).json(student);
     } catch (err) {
+      // If an error occurs, return a status of 404 (Not Found) with the error message
       res.status(404).json(err);
     }
   },
@@ -167,18 +183,25 @@ const AdminController = {
 
   deleteStudent: async (req, res) => {
     try {
+      // Retrieve the student by email from the admin model
       const student = await adminModel.getUser(req.body.email);
-
+  
+      // Check if no student was found
       if (student.length == 0) {
         return res.status(404).json("Student Email Is Not Exists");
       }
-
+  
+      // Delete the student by email
       await adminModel.deleteStudentByEmail(student[0].email);
+  
+      // Return a success message with a status of 200 (OK)
       res.status(200).json("Student Deleted Successfully");
     } catch (err) {
+      // If an error occurs, return a status of 404 (Not Found) with the error message
       res.status(404).json(err);
     }
   },
+  
   deleteCourse: async (req, res) => {
     try {
       const course = await courseModel.getCourseByCode(req.body.code);
@@ -195,52 +218,63 @@ const AdminController = {
   },
   addInstructor: async (req, res) => {
     try {
+      // Validate the request body for errors
       const errors = validationResult(req);
-
+  
+      // If there are validation errors, return a 422 status with the errors array
       if (!errors.isEmpty()) {
-       // return res.status(422).json({ errors: errors.array() });
+        return res.status(422).json({ errors: errors.array() }); // Backend validation output message
       }
-
+  
+      // Create an instructor object from the request body
       const instructor = {
         name: req.body.name,
-        //password: req.body.password,
+        // password: req.body.password, // Password is handled separately
         email: req.body.email,
         phone: req.body.phone,
         status: req.body.status,
         type: "instructor",
       };
-
+  
+      // Check if the email already exists in the database
       const existingEmail = await adminModel.getUser(instructor.email);
-
       if (existingEmail.length > 0) {
         return res.status(409).json("Instructor Email Already Exists");
       }
-
+  
+      // Check if the phone number already exists in the database
       const existingPhone = await adminModel.getUserByPhone(instructor.phone);
-
       if (existingPhone.length > 0) {
-        return res.status(409).json("Instructor Phone  Already Exists");
+        return res.status(409).json("Instructor Phone Already Exists");
       }
-
-      //password validation
+  
+      // Validate and hash the password if it meets the criteria
       const instructorPassword = req.body.password;
       if (instructorPassword.length >= 8 && instructorPassword.length <= 50) {
         instructor.password = await bcrypt.hash(instructorPassword, 10);
       }
+  
+      // Log the instructor object for debugging purposes
       console.log(instructor);
+  
+      // Insert the new instructor into the database
       await adminModel.insertInstructor(instructor);
+  
+      // Return a success message with a status of 200 (OK)
       res.status(200).json("Instructor Added Successfully");
     } catch (err) {
+      // If an error occurs, return a status of 404 (Not Found) with the error message
       res.status(404).json(err);
     }
   },
+  
 
  addEmployee: async (req, res) => {
     try {
       const errors = validationResult(req);
 
       if (!errors.isEmpty()) {
-       // return res.status(422).json({ errors: errors.array() });
+        return res.status(422).json({ errors: errors.array() });
       }
 
       const employee = {
@@ -599,5 +633,6 @@ const AdminController = {
     }
   },
 };
+
 
 module.exports = AdminController;

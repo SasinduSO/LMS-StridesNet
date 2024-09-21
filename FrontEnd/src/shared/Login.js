@@ -28,6 +28,7 @@ function Login() {
 
         // Debug log to check the response
         console.log("Login response:", resp.data);
+        console.log("Token:", resp.data.token); // Output the token to the console
 
         // Save the token and user information
         setAuthUser(resp.data.token, resp.data.user);

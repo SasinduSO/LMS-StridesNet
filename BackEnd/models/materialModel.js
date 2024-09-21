@@ -3,6 +3,8 @@ const util = require("util");
 const query = util.promisify(connection.query).bind(connection);
 
 class MaterialModel {
+
+  //read
   async getMaterials(courseId) {
     try {
       const queryString = `SELECT * FROM course_${courseId}_materials`;
@@ -12,7 +14,7 @@ class MaterialModel {
       throw new Error("Failed to retrieve materials");
     }
   }
-
+//add query
   async addMaterial(courseId, materialData) {
     try {
       const queryString = `INSERT INTO course_${courseId}_materials SET ?`;
@@ -22,7 +24,7 @@ class MaterialModel {
       throw new Error("Failed to add material");
     }
   }
-
+//update material
   async updateMaterial(courseId, materialId, materialData) {
     try {
       const queryString = `UPDATE course_${courseId}_materials SET ? WHERE id = ?`;
@@ -32,7 +34,7 @@ class MaterialModel {
       throw new Error("Failed to update material");
     }
   }
-
+//delete quaery
   async deleteMaterial(courseId, materialId) {
     try {
       const queryString = `DELETE FROM course_${courseId}_materials WHERE id = ?`;

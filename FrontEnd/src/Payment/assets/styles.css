@@ -1,0 +1,22 @@
+.admin-logout {
+    background-color: #f76b07;
+    display: inline-block; /* Change to inline-block for proper spacing */
+    float: right;
+    margin-right: 5%;
+    border-radius: 16px;
+    color: white !important; /* Force text color to white */
+  }
+  
+  .admin-logout:hover {
+    background-color: #e65c00; /* Change background on hover */
+  }
+  
+  
+  /* Optional: Additional styles for the overall page */
+  .payment-page {
+    background-color: #1c1c1c; /* Black background */
+    color: white; /* White text */
+    padding: 20px;
+  }
+  
+  

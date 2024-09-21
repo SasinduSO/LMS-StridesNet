@@ -3,6 +3,8 @@ const util = require("util");
 const query = util.promisify(connection.query).bind(connection);
 
 class AdminModel {
+
+  //get queries 
   getInstructors() {
     const queryString =
       "SELECT name AS Name,email AS Email,phone As Phone,status AS Status  FROM user WHERE type = 'instructor'";
@@ -36,6 +38,8 @@ class AdminModel {
     const result = query(queryString, phone);
     return result;
   }
+
+  //delete queries
   deleteInstructorByEmail(instructorEmail) {
     const queryString =
       "DELETE FROM user WHERE email = ? && type = 'instructor'";
@@ -57,6 +61,9 @@ class AdminModel {
     const result = query(queryString, studentEmail);
     return result;
   }
+
+  //insert queries
+
   insertInstructor(instructorData) {
     const queryString = "INSERT INTO user SET ?";
     const result = query(queryString, instructorData);
@@ -74,6 +81,9 @@ class AdminModel {
     const result = query(queryString, studentData);
     return result;
   }
+
+  //update queries
+  
   updateInstructorData(instructorData, oldEmail) {
     const queryString = "UPDATE user SET ? WHERE ?";
     const result = query(queryString, [instructorData, { email: oldEmail }]);

@@ -3,6 +3,8 @@ const util = require("util");
 const query = util.promisify(connection.query).bind(connection);
 
 class StudentModel {
+
+  //insert query
   enrollCourse(student_id, course_id) {
     const queryString = "INSERT INTO studentcourse SET ?";
     const result = query(queryString, {
@@ -11,6 +13,8 @@ class StudentModel {
     });
     return result;
   }
+
+  //read query
   getStudentCourses(studentId) {
     const queryString = `SELECT c.name AS CourseName,c.code,s.grade,u.name as InstructorName 
     FROM course c
@@ -28,7 +32,7 @@ class StudentModel {
     return result;
   }
   getActiveCoursesForStudent(studentId) {
-    const queryString = `SELECT c.name AS CourseName, c.code, u.name AS InstructorName 
+    const queryString = `SELECT c.name AS CourseName, c.code,c.price AS price, u.name AS InstructorName 
     FROM course AS c 
     LEFT JOIN user AS u
     ON c.instructor_id=u.id

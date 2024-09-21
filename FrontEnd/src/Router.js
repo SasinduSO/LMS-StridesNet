@@ -22,6 +22,7 @@ import AddUser from "./Admin/components/AddUser";
 import InstructorAdd from "./Instructor/pages/InstructorAdd";
 import MaterialDisplay from "./Instructor/pages/MaterialDisplay";
 import AddMaterial from "./Instructor/pages/AddMaterial";
+import Payment from "./Payment/pages/payment"
 
 export const router = createBrowserRouter([
   {
@@ -203,116 +204,12 @@ export const router = createBrowserRouter([
             path: "/Student/MyCourses",
             element: <MyCourses />,
           },
+          {
+            path: "/Student/Payment/:courseCode/:price",
+            element: <Payment />,
+          },
         ],
       },
     ],
   },
 ]);
-// import { createBrowserRouter, Navigate } from "react-router-dom";
-// import App from "./App";
-// import Guest from "./middleware/Guest";
-// import Login from "./shared/Login";
-// import SideBar from "./Admin/components/SideBar";
-// import Assign from "./Admin/pages/Assign";
-// import Main from "./Instructor/pages/Main";
-// import Home from "./shared/Home";
-// import AllCourses from "./Student/pages/AllCourses";
-// import MyCourses from "./Student/pages/MyCourses";
-// import Show from "./Admin/pages/Show";
-// import AdminAdd from "./Admin/pages/AdminAdd";
-// import AdminUpdate from "./Admin/pages/AdminUpdate";
-// import Courses from "./Instructor/pages/Courses";
-// import StudentCourse from "./Instructor/pages/StudentCourse";
-// export const router = createBrowserRouter([
-//   {
-//     path: "",
-//     element: <App />,
-//     children: [
-//       {
-//         element: <Guest />,
-//         children: [
-//           {
-//             path: "/",
-//             element: <Home />,
-//           },
-//           {
-//             path: "/login",
-//             element: <Login />,
-//           },
-//         ],
-//       },
-
-//       {
-//         path: "/Admin",
-//         element: (
-//           <>
-//             <SideBar />
-//           </>
-//         ),
-//         children: [
-//           {
-//             path: "/Admin",
-//             element: <Show />,
-//           },
-//           {
-//             path: "/Admin/add",
-//             element: <AdminAdd />,
-//           },
-//           {
-//             path: "/Admin/Update",
-//             element: <AdminUpdate />,
-//           },
-
-//           {
-//             path: "/Admin/assign",
-//             element: <Assign />,
-//           },
-//         ],
-//       },
-//       {
-//         path: "/Instructor",
-//         element: <App />,
-//         children: [
-//           {
-//             path: "/Instructor",
-//             element: <Main />,
-//           },
-//           {
-//             path: "/Instructor/Main",
-//             element: <Main />,
-//           },
-//           {
-//             path: "/Instructor/courses",
-//             element: <Courses />,
-//           },
-//           {
-//             path: "/Instructor/StudentCourse",
-//             element: <StudentCourse />,
-//           },
-//         ],
-//       },
-//       {
-//         path: "/Student",
-//         element: <App />,
-//         children: [
-//           {
-//             path: "/Student",
-//             element: <AllCourses />,
-//           },
-//           {
-//             path: "/Student/AllCourses",
-//             element: <AllCourses />,
-//           },
-//           {
-//             path: "/Student/MyCourses",
-//             element: <MyCourses />,
-//           },
-//         ],
-//       },
-//       {
-//         path: "*",
-//         element: <Navigate to={"/"} />,
-//       },
-//     ],
-//   },
-// ]);

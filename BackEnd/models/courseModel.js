@@ -3,6 +3,8 @@ const util = require("util");
 const query = util.promisify(connection.query).bind(connection);
 
 class CourseModel {
+
+  //get queries
   getCourses() {
     const queryString = `SELECT c.name As Name, c.code As Code,c.status As Status, u.email AS 'Instructor Email', c.price AS price
     FROM course AS c
@@ -31,6 +33,8 @@ class CourseModel {
     return result;
   }
 
+  //insert queries
+
   insertCourse(courseData) {
     const queryString = "INSERT INTO course SET ?";
     const result = query(queryString, {
@@ -54,6 +58,8 @@ class CourseModel {
     `;
     await query(createMaterialsTableQuery);
   };
+
+  //update queries
   async updateCourse(courseData, oldCode) {
     const queryString = "UPDATE course SET ? WHERE ?";
     const result = await query(queryString, [courseData, {code: oldCode}]);
@@ -105,6 +111,7 @@ class CourseModel {
     ]);
     return result;
   }
+  //delete queries
   deleteFromStudentCourse(courseId) {
     const queryString = "DELETE FROM studentcourse WHERE ?";
     const result = query(queryString, { course_id: courseId });

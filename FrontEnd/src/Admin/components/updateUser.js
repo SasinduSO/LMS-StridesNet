@@ -223,7 +223,7 @@ const UpdateUser = (type) => {
               </label>
             </div>
             <div className="admin-col-75">
-              {user.status == "1" && (
+              {user.status === "1" && (
                 <>
                   <select
                     id="status"
@@ -242,7 +242,7 @@ const UpdateUser = (type) => {
                   </select>
                 </>
               )}
-              {user.status == "0" && (
+              {user.status === "0" && (
                 <>
                   <>
                     <select
